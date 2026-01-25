@@ -6,12 +6,18 @@ import { ENV } from './_core/env';
 let _db: ReturnType<typeof drizzle> | null = null;
 
 export async function getDb() {
-  if (!_db && process.env.DATABASE_URL) {
-    try {
-      _db = drizzle(process.env.DATABASE_URL);
-    } catch (error) {
-      console.warn("[Database] Failed to connect:", error);
-      _db = null;
+  if (!_db) {
+    if (process.env.DATABASE_URL) {
+      try {
+        console.log("[Database] Tentando conectar ao MySQL...");
+        _db = drizzle(process.env.DATABASE_URL);
+        console.log("[Database] Conexão configurada com sucesso.");
+      } catch (error) {
+        console.error("[Database] Erro crítico na configuração da conexão:", error);
+        _db = null;
+      }
+    } else {
+      console.warn("[Database] DATABASE_URL não encontrada. Verifique as variáveis de ambiente no Railway.");
     }
   }
   return _db;
