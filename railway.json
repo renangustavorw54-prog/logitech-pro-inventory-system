@@ -8,5 +8,20 @@
     "restartPolicyType": "ON_FAILURE",
     "healthcheckPath": "/api/trpc/system.health",
     "healthcheckTimeout": 100
+  },
+  "services": {
+    "logitech-pro": {
+      "source": {
+        "repo": "renangustavorw54-prog/logitech-pro-inventory-system"
+      },
+      "variables": {
+        "NODE_ENV": "production",
+        "JWT_SECRET": "${{RAILWAY_AUTH_TOKEN}}",
+        "DATABASE_URL": "${{MySQL.DATABASE_URL}}"
+      }
+    },
+    "MySQL": {
+      "image": "mysql:8"
+    }
   }
 }

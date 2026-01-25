@@ -1,15 +1,25 @@
-# 🚀 LogiTech Pro - Sistema de Gestão de Estoque (PRONTO PARA DEPLOY)
+# 🚀 LogiTech Pro - Sistema de Gestão de Estoque
 
-Este sistema está configurado para deploy automático no **Railway**.
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/deploy?repo=https://github.com/renangustavorw54-prog/logitech-pro-inventory-system)
 
-## 🌐 Como colocar o sistema no ar (Deploy)
+## 🌐 Como colocar o sistema no ar (O Jeito Mais Fácil)
 
-1. Acesse [Railway.app](https://railway.app) e faça login com seu GitHub.
-2. Clique em **"New Project"** e selecione **"Deploy from GitHub repo"**.
-3. Escolha este repositório (`logitech-pro-inventory-system`).
-4. O Railway detectará automaticamente as configurações que eu criei (`railway.json`).
-5. **Importante:** No painel do Railway, adicione uma base de dados **MySQL** ao projeto.
-6. Nas variáveis de ambiente (Variables) do serviço do sistema, o Railway conectará o banco automaticamente se você usar a variável `DATABASE_URL`.
+1. Clique no botão **"Deploy on Railway"** acima.
+2. O Railway vai abrir uma tela já configurada com:
+   - O código do sistema.
+   - O banco de dados MySQL.
+   - Todas as variáveis necessárias.
+3. Clique em **"Deploy"** e pronto! O sistema fará tudo sozinho.
+
+---
+
+## 🛠️ Configuração Manual (Se preferir)
+
+Se você já criou o projeto manualmente:
+1. No painel do Railway, adicione um serviço **MySQL**.
+2. Nas variáveis do sistema, garanta que existe a `DATABASE_URL` (o Railway coloca sozinho).
+3. Adicione manualmente a variável `JWT_SECRET` com qualquer senha.
+4. Em **Settings > Networking**, clique em **Generate Domain** para ganhar seu link.
 
 ## 🛠️ Variáveis de Ambiente Necessárias
 Certifique-se de configurar estas variáveis no painel do Railway:
