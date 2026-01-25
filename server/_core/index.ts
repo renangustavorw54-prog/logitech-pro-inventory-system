@@ -75,10 +75,12 @@ async function startServer() {
   const port = parseInt(process.env.PORT || "3000");
   console.log(`[Server] Tentando escutar na porta: ${port}`);
 
-  server.listen(port, "0.0.0.0", () => {
-    console.log(`🚀 Servidor rodando na porta ${port}`);
-    console.log(`🔗 Healthcheck aceito em http://0.0.0.0:${port}`);
-    console.log(`🌍 Acesso público via Railway configurado.`);
+  // IMPORTANTE: O Railway exige 0.0.0.0 para tráfego externo
+  const host = "0.0.0.0";
+  
+  server.listen(port, host, () => {
+    console.log(`🚀 SERVER_READY: Servidor escutando em ${host}:${port}`);
+    console.log(`🔗 HEALTHCHECK_ENDPOINT: http://${host}:${port}/health`);
   }).on('error', (err) => {
     console.error("[Server] Erro ao iniciar o servidor HTTP:", err);
     process.exit(1);
