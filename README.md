@@ -1,4 +1,24 @@
-# LogiTech Pro - Sistema de Gestão de Estoque
+# 🚀 LogiTech Pro - Sistema de Gestão de Estoque (PRONTO PARA DEPLOY)
+
+Este sistema está configurado para deploy automático no **Railway**.
+
+## 🌐 Como colocar o sistema no ar (Deploy)
+
+1. Acesse [Railway.app](https://railway.app) e faça login com seu GitHub.
+2. Clique em **"New Project"** e selecione **"Deploy from GitHub repo"**.
+3. Escolha este repositório (`logitech-pro-inventory-system`).
+4. O Railway detectará automaticamente as configurações que eu criei (`railway.json`).
+5. **Importante:** No painel do Railway, adicione uma base de dados **MySQL** ao projeto.
+6. Nas variáveis de ambiente (Variables) do serviço do sistema, o Railway conectará o banco automaticamente se você usar a variável `DATABASE_URL`.
+
+## 🛠️ Variáveis de Ambiente Necessárias
+Certifique-se de configurar estas variáveis no painel do Railway:
+- `DATABASE_URL`: (Gerada automaticamente pelo Railway ao adicionar MySQL)
+- `JWT_SECRET`: Uma senha forte para segurança dos tokens.
+- `NODE_ENV`: production
+- `OWNER_OPEN_ID`: Seu ID de administrador.
+
+---
 
 ![LogiTech Pro](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -253,15 +273,17 @@ Para dúvidas comerciais, licenciamento ou parcerias:
 
 ## 🎉 Roadmap Futuro
 
-- [ ] Exportação de relatórios em PDF
-- [ ] Sistema de códigos de barras/QR code
+- [x] Exportação de relatórios em PDF e Excel
+- [x] Sistema de códigos de barras/QR code
+- [x] Controle de permissões por usuário (RBAC)
+- [x] Alertas automáticos de estoque crítico
+- [x] Análise de giro de produtos
 - [ ] Gerenciamento de fornecedores
 - [ ] Integração com sistemas de pagamento
 - [ ] App mobile nativo (iOS/Android)
 - [ ] API REST pública para integrações
 - [ ] Backup automático em nuvem
 - [ ] Suporte multi-idioma
-- [ ] Controle de permissões por usuário
 - [ ] Auditoria completa de operações
 
 ---
