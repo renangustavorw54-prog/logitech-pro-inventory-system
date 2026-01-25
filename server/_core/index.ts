@@ -29,6 +29,21 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 
 async function startServer() {
   console.log("[Server] Iniciando processo de startup...");
+  
+  // Diagnóstico de Variáveis de Ambiente
+  console.log("[Config] Verificando variáveis de ambiente críticas:");
+  const criticalVars = [
+    { name: "DATABASE_URL", value: process.env.DATABASE_URL },
+    { name: "JWT_SECRET", value: process.env.JWT_SECRET },
+    { name: "VITE_APP_ID", value: process.env.VITE_APP_ID },
+    { name: "OAUTH_SERVER_URL", value: process.env.OAUTH_SERVER_URL },
+    { name: "NODE_ENV", value: process.env.NODE_ENV }
+  ];
+  
+  criticalVars.forEach(v => {
+    const status = v.value ? "✅ Definida" : "❌ FALTANDO";
+    console.log(`[Config] ${v.name.padEnd(20)}: ${status}`);
+  });
   const app = express();
   const server = createServer(app);
   // Configure body parser with larger size limit for file uploads
