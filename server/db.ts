@@ -1,11 +1,10 @@
-import { eq } from "drizzle-orm";
+import { eq, desc, sql, and, gte, lte } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, categories, products, transactions, InsertCategory, InsertProduct, InsertTransaction } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
-// Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
@@ -89,4 +88,250 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// ============================================================================
+// Categories
+// ============================================================================
+
+export async function getAllCategories() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(categories).orderBy(categories.name);
+}
+
+export async function getCategoryById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(categories).where(eq(categories.id, id)).limit(1);
+  return result[0];
+}
+
+export async function createCategory(data: InsertCategory) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(categories).values(data) as any;
+  return Number(result.insertId);
+}
+
+export async function updateCategory(id: number, data: Partial<InsertCategory>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(categories).set(data).where(eq(categories.id, id));
+}
+
+export async function deleteCategory(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(categories).where(eq(categories.id, id));
+}
+
+// ============================================================================
+// Products
+// ============================================================================
+
+export async function getAllProducts() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select({
+    id: products.id,
+    name: products.name,
+    categoryId: products.categoryId,
+    categoryName: categories.name,
+    quantity: products.quantity,
+    minStock: products.minStock,
+    price: products.price,
+    createdAt: products.createdAt,
+    updatedAt: products.updatedAt,
+  })
+  .from(products)
+  .leftJoin(categories, eq(products.categoryId, categories.id))
+  .orderBy(products.name);
+}
+
+export async function getProductById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select({
+    id: products.id,
+    name: products.name,
+    categoryId: products.categoryId,
+    categoryName: categories.name,
+    quantity: products.quantity,
+    minStock: products.minStock,
+    price: products.price,
+    createdAt: products.createdAt,
+    updatedAt: products.updatedAt,
+  })
+  .from(products)
+  .leftJoin(categories, eq(products.categoryId, categories.id))
+  .where(eq(products.id, id))
+  .limit(1);
+  return result[0];
+}
+
+export async function getProductsByCategory(categoryId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(products).where(eq(products.categoryId, categoryId));
+}
+
+export async function getLowStockProducts() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select({
+    id: products.id,
+    name: products.name,
+    categoryId: products.categoryId,
+    categoryName: categories.name,
+    quantity: products.quantity,
+    minStock: products.minStock,
+    price: products.price,
+    createdAt: products.createdAt,
+    updatedAt: products.updatedAt,
+  })
+  .from(products)
+  .leftJoin(categories, eq(products.categoryId, categories.id))
+  .where(sql`${products.quantity} <= ${products.minStock}`)
+  .orderBy(products.quantity);
+}
+
+export async function createProduct(data: InsertProduct) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(products).values(data) as any;
+  return Number(result.insertId);
+}
+
+export async function updateProduct(id: number, data: Partial<InsertProduct>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(products).set(data).where(eq(products.id, id));
+}
+
+export async function deleteProduct(id: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(products).where(eq(products.id, id));
+}
+
+export async function updateProductQuantity(id: number, quantity: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.update(products).set({ quantity }).where(eq(products.id, id));
+}
+
+// ============================================================================
+// Transactions
+// ============================================================================
+
+export async function getAllTransactions() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select({
+    id: transactions.id,
+    productId: transactions.productId,
+    productName: products.name,
+    userId: transactions.userId,
+    userName: users.name,
+    type: transactions.type,
+    quantity: transactions.quantity,
+    notes: transactions.notes,
+    createdAt: transactions.createdAt,
+  })
+  .from(transactions)
+  .leftJoin(products, eq(transactions.productId, products.id))
+  .leftJoin(users, eq(transactions.userId, users.id))
+  .orderBy(desc(transactions.createdAt));
+}
+
+export async function getTransactionsByProduct(productId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select({
+    id: transactions.id,
+    productId: transactions.productId,
+    productName: products.name,
+    userId: transactions.userId,
+    userName: users.name,
+    type: transactions.type,
+    quantity: transactions.quantity,
+    notes: transactions.notes,
+    createdAt: transactions.createdAt,
+  })
+  .from(transactions)
+  .leftJoin(products, eq(transactions.productId, products.id))
+  .leftJoin(users, eq(transactions.userId, users.id))
+  .where(eq(transactions.productId, productId))
+  .orderBy(desc(transactions.createdAt));
+}
+
+export async function getTransactionsByDateRange(startDate: Date, endDate: Date) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select({
+    id: transactions.id,
+    productId: transactions.productId,
+    productName: products.name,
+    userId: transactions.userId,
+    userName: users.name,
+    type: transactions.type,
+    quantity: transactions.quantity,
+    notes: transactions.notes,
+    createdAt: transactions.createdAt,
+  })
+  .from(transactions)
+  .leftJoin(products, eq(transactions.productId, products.id))
+  .leftJoin(users, eq(transactions.userId, users.id))
+  .where(and(
+    gte(transactions.createdAt, startDate),
+    lte(transactions.createdAt, endDate)
+  ))
+  .orderBy(desc(transactions.createdAt));
+}
+
+export async function createTransaction(data: InsertTransaction) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db.insert(transactions).values(data) as any;
+  return Number(result.insertId);
+}
+
+// ============================================================================
+// Dashboard Statistics
+// ============================================================================
+
+export async function getDashboardStats() {
+  const db = await getDb();
+  if (!db) return null;
+
+  const [totalProductsResult] = await db.select({ count: sql<number>`count(*)` }).from(products);
+  const totalProducts = totalProductsResult?.count || 0;
+
+  const lowStockItems = await getLowStockProducts();
+  const lowStockCount = lowStockItems.length;
+
+  const allProducts = await db.select().from(products);
+  const totalValue = allProducts.reduce((sum, p) => {
+    const price = typeof p.price === 'string' ? parseFloat(p.price) : p.price;
+    return sum + (price * p.quantity);
+  }, 0);
+
+  const recentTransactions = await db.select({
+    id: transactions.id,
+    productId: transactions.productId,
+    productName: products.name,
+    type: transactions.type,
+    quantity: transactions.quantity,
+    createdAt: transactions.createdAt,
+  })
+  .from(transactions)
+  .leftJoin(products, eq(transactions.productId, products.id))
+  .orderBy(desc(transactions.createdAt))
+  .limit(10);
+
+  return {
+    totalProducts,
+    lowStockCount,
+    totalValue,
+    recentTransactions,
+  };
+}
