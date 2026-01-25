@@ -28,6 +28,7 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
+  console.log("[Server] Iniciando processo de startup...");
   const app = express();
   const server = createServer(app);
   // Configure body parser with larger size limit for file uploads
@@ -57,12 +58,20 @@ async function startServer() {
 
   // O Railway precisa que o host seja exatamente 0.0.0.0 e use a porta da variável de ambiente PORT
   const port = parseInt(process.env.PORT || "3000");
+  console.log(`[Server] Tentando escutar na porta: ${port}`);
 
   server.listen(port, "0.0.0.0", () => {
     console.log(`🚀 Servidor rodando na porta ${port}`);
     console.log(`🔗 Healthcheck aceito em http://0.0.0.0:${port}`);
     console.log(`🌍 Acesso público via Railway configurado.`);
+  }).on('error', (err) => {
+    console.error("[Server] Erro ao iniciar o servidor HTTP:", err);
+    process.exit(1);
   });
 }
 
-startServer().catch(console.error);
+console.log("[Server] Chamando startServer()...");
+startServer().catch((err) => {
+  console.error("[Server] Erro fatal no startServer:", err);
+  process.exit(1);
+});

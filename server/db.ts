@@ -7,14 +7,24 @@ let _db: ReturnType<typeof drizzle> | null = null;
 
 export async function getDb() {
   if (!_db) {
+    console.log("[Database] getDb() chamado pela primeira vez.");
     if (process.env.DATABASE_URL) {
       try {
-        console.log("[Database] Tentando conectar ao MySQL...");
+        console.log("[Database] DATABASE_URL encontrada. Tentando configurar drizzle...");
+        // Ocultar senha nos logs
+        const maskedUrl = process.env.DATABASE_URL.replace(/:([^:@]+)@/, ":****@");
+        console.log(`[Database] URL: ${maskedUrl}`);
+        
         _db = drizzle(process.env.DATABASE_URL);
-        console.log("[Database] Conexão configurada com sucesso.");
+        console.log("[Database] Drizzle configurado. Testando conexão com query simples...");
+        
+        // Teste de conexão real
+        await _db.execute(sql`SELECT 1`);
+        console.log("[Database] Teste de conexão (SELECT 1) bem-sucedido!");
       } catch (error) {
-        console.error("[Database] Erro crítico na configuração da conexão:", error);
+        console.error("[Database] Erro crítico na conexão ou teste do banco:", error);
         _db = null;
+        // Não travar o servidor se o banco falhar, mas logar o erro
       }
     } else {
       console.warn("[Database] DATABASE_URL não encontrada. Verifique as variáveis de ambiente no Railway.");

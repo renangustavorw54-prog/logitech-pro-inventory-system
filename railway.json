@@ -7,7 +7,7 @@
     "startCommand": "pnpm start",
     "restartPolicyType": "ON_FAILURE",
     "healthcheckPath": "/health",
-    "healthcheckTimeout": 100
+    "healthcheckTimeout": 300
   },
   "services": {
     "logitech-pro": {
