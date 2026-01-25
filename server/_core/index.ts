@@ -50,15 +50,13 @@ async function startServer() {
     serveStatic(app);
   }
 
-  const preferredPort = parseInt(process.env.PORT || "3000");
-  const port = await findAvailablePort(preferredPort);
+  // O Railway precisa que o host seja exatamente 0.0.0.0 e use a porta da variável de ambiente PORT
+  const port = parseInt(process.env.PORT || "3000");
 
-  if (port !== preferredPort) {
-    console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
-  }
-
-  server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/`);
+  server.listen(port, "0.0.0.0", () => {
+    console.log(`🚀 Servidor rodando na porta ${port}`);
+    console.log(`🔗 Healthcheck aceito em http://0.0.0.0:${port}`);
+    console.log(`🌍 Acesso público via Railway configurado.`);
   });
 }
 
