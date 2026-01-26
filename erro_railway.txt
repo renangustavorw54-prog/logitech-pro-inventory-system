@@ -1,0 +1,19 @@
+Erro observado na imagem do Railway:
+
+Build › Build image
+Failed to build an image. Please check the build logs for more details.
+
+[stage:0 14/16] RUN --mount=type=cache,id=/0b24776f-9037-4a06-9076-e408bb3962c0-node_m..._status: 1,
+signal: null,
+output: [ null, null, null ],
+pid: 173,
+stdout: null,
+stderr: null.
+}
+
+Node.js v18.20.5
+ELIFECYCLE Command failed with exit code 1.
+"pnpm run build" did not complete successfully: exit code: 1
+
+O erro indica que o comando "pnpm run build" está falando durante o processo de build no Railway.
+O status online está verde, mas o build está falhando.

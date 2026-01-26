@@ -20,7 +20,8 @@ export async function getDb() {
         new Promise((_, reject) => setTimeout(() => reject(new Error("DB Timeout")), 3000))
       ]);
     } catch (error) {
-      console.error("⚠️ [Database] Falha na conexão inicial:", error.message);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error("⚠️ [Database] Falha na conexão inicial:", errorMessage);
       // Não matamos o processo, permitimos que o tRPC tente novamente depois
       const tempDb = _db;
       _db = null; 
