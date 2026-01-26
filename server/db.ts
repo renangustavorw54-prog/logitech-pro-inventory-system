@@ -7,32 +7,24 @@ let _db: ReturnType<typeof drizzle> | null = null;
 
 export async function getDb() {
   if (!_db) {
-    console.log("[Database] getDb() chamado pela primeira vez.");
-    if (process.env.DATABASE_URL) {
-      try {
-        console.log("[Database] DATABASE_URL encontrada. Tentando configurar drizzle...");
-        // Ocultar senha nos logs
-        const maskedUrl = process.env.DATABASE_URL.replace(/:([^:@]+)@/, ":****@");
-        console.log(`[Database] URL: ${maskedUrl}`);
-        
-        _db = drizzle(process.env.DATABASE_URL);
-        console.log("[Database] Drizzle configurado. Testando conexão com query simples...");
-        
-        // Teste de conexão real (com timeout para não travar o boot)
-        const connectionTest = Promise.race([
-          _db.execute(sql`SELECT 1`),
-          new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout na conexão com o banco")), 5000))
-        ]);
-        
-        await connectionTest;
-        console.log("✅ [Database] Conexão com MySQL validada com sucesso!");
-      } catch (error) {
-        console.error("⚠️ [Database] Aviso: Não foi possível conectar ao banco agora, mas o servidor continuará subindo:", error.message);
-        // Mantemos o _db como null para tentar novamente depois, mas não travamos o servidor
-        _db = null;
-      }
-    } else {
-      console.warn("[Database] DATABASE_URL não encontrada. Verifique as variáveis de ambiente no Railway.");
+    if (!process.env.DATABASE_URL) {
+      console.warn("⚠️ [Database] DATABASE_URL ausente.");
+      return null;
+    }
+
+    try {
+      _db = drizzle(process.env.DATABASE_URL);
+      // Teste rápido de 3 segundos
+      await Promise.race([
+        _db.execute(sql`SELECT 1`),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("DB Timeout")), 3000))
+      ]);
+    } catch (error) {
+      console.error("⚠️ [Database] Falha na conexão inicial:", error.message);
+      // Não matamos o processo, permitimos que o tRPC tente novamente depois
+      const tempDb = _db;
+      _db = null; 
+      return tempDb; 
     }
   }
   return _db;
