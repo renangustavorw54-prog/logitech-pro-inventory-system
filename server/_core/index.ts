@@ -1,48 +1,41 @@
 import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
-import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { registerOAuthRoutes } from "./oauth";
-import { appRouter } from "../routers";
-import { createContext } from "./context";
-import { serveStatic, setupVite } from "./vite";
 
 async function startServer() {
+  console.log("\n=== 🔍 DIAGNÓSTICO DE AMBIENTE RAILWAY ===");
+  console.log(`PORT enviada pelo Railway: ${process.env.PORT}`);
+  console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+  console.log(`DATABASE_URL presente: ${process.env.DATABASE_URL ? "SIM" : "NÃO"}`);
+  console.log("==========================================\n");
+
   const app = express();
   const server = createServer(app);
 
-  // MODO DE EMERGÊNCIA: Rota de saúde no topo absoluto, sem nenhum middleware antes
+  // Rota de saúde absoluta - Responde em qualquer circunstância
   app.get("/health", (req, res) => {
-    console.log(`[Health] Recebido pingo de: ${req.ip}`);
+    console.log(`[Health] Pingo recebido de ${req.ip} às ${new Date().toISOString()}`);
     res.status(200).send("OK");
   });
 
-  // Middlewares básicos
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // Rota raiz para teste manual
+  app.get("/", (_req, res) => {
+    res.status(200).send("Servidor Logitech Pro está ONLINE!");
+  });
 
-  // Rotas
-  registerOAuthRoutes(app);
-  app.use("/api/trpc", createExpressMiddleware({ router: appRouter, createContext }));
-
-  if (process.env.NODE_ENV === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
-
-  // Forçar porta e host padrão Railway
   const port = Number(process.env.PORT || 3000);
   const host = "0.0.0.0";
 
-  server.listen(port, host, () => {
-    console.log(`\n🚀 SERVIDOR ONLINE`);
-    console.log(`📍 Porta: ${port}`);
-    console.log(`📍 Host: ${host}`);
-  });
+  try {
+    server.listen(port, host, () => {
+      console.log(`🚀 [Sucesso] Servidor escutando em http://${host}:${port}`);
+      console.log(`📍 Teste o healthcheck em: http://${host}:${port}/health`);
+    });
+  } catch (err) {
+    console.error("❌ [Erro] Falha ao iniciar listen:", err);
+  }
 }
 
-startServer().catch(err => {
-  console.error("Erro fatal:", err);
-  process.exit(1);
-});
+// Início imediato
+console.log("Iniciando script de boot...");
+startServer().catch(err => console.error("Erro fatal no boot:", err));
