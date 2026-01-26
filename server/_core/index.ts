@@ -1,41 +1,60 @@
 import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
+import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import { registerOAuthRoutes } from "./oauth";
+import { appRouter } from "../routers";
+import { createContext } from "./context";
+import { serveStatic, setupVite } from "./vite";
+import * as db from "../db";
 
 async function startServer() {
-  console.log("\n=== 🔍 DIAGNÓSTICO DE AMBIENTE RAILWAY ===");
-  console.log(`PORT enviada pelo Railway: ${process.env.PORT}`);
-  console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
-  console.log(`DATABASE_URL presente: ${process.env.DATABASE_URL ? "SIM" : "NÃO"}`);
-  console.log("==========================================\n");
-
   const app = express();
   const server = createServer(app);
 
-  // Rota de saúde absoluta - Responde em qualquer circunstância
+  // ✅ MANTIDO: Rota de saúde que garantiu o "Active" verde
   app.get("/health", (req, res) => {
-    console.log(`[Health] Pingo recebido de ${req.ip} às ${new Date().toISOString()}`);
     res.status(200).send("OK");
   });
 
-  // Rota raiz para teste manual
-  app.get("/", (_req, res) => {
-    res.status(200).send("Servidor Logitech Pro está ONLINE!");
-  });
+  // Restaurando Middlewares
+  app.use(express.json({ limit: "50mb" }));
+  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+  // Restaurando Rotas de Negócio
+  registerOAuthRoutes(app);
+  app.use(
+    "/api/trpc",
+    createExpressMiddleware({
+      router: appRouter,
+      createContext,
+    })
+  );
+
+  // Servir Frontend
+  if (process.env.NODE_ENV === "development") {
+    await setupVite(app, server);
+  } else {
+    serveStatic(app);
+  }
 
   const port = Number(process.env.PORT || 3000);
   const host = "0.0.0.0";
 
-  try {
-    server.listen(port, host, () => {
-      console.log(`🚀 [Sucesso] Servidor escutando em http://${host}:${port}`);
-      console.log(`📍 Teste o healthcheck em: http://${host}:${port}/health`);
+  server.listen(port, host, () => {
+    console.log(`🚀 SISTEMA LOGITECH PRO ONLINE`);
+    console.log(`📍 Porta: ${port} | Host: ${host}`);
+    
+    // Conexão com banco em background para não travar o healthcheck
+    db.getDb().then(() => {
+      console.log("✅ Banco de dados conectado com sucesso!");
+    }).catch(err => {
+      console.error("⚠️ Aviso: Banco de dados ainda não conectou, mas o servidor continua online.");
     });
-  } catch (err) {
-    console.error("❌ [Erro] Falha ao iniciar listen:", err);
-  }
+  });
 }
 
-// Início imediato
-console.log("Iniciando script de boot...");
-startServer().catch(err => console.error("Erro fatal no boot:", err));
+startServer().catch(err => {
+  console.error("Erro fatal:", err);
+  process.exit(1);
+});
