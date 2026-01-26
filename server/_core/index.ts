@@ -11,17 +11,20 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
 
-  // 1. Rota de Healthcheck IMEDIATA (antes de qualquer outra lógica)
-  // Isso garante que o Railway receba 200 OK mesmo se o resto demorar
+  // --- MELHORIA 4: Rota de Health Check dedicada e pública ---
+  // Responde 200 OK imediatamente sem exigir login ou redirecionar
   app.get("/health", (_req, res) => {
-    res.status(200).send("OK");
+    res.status(200).send("OK - Server is alive");
   });
 
+  // Configurações básicas
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+  // Rotas de OAuth
   registerOAuthRoutes(app);
 
+  // tRPC API
   app.use(
     "/api/trpc",
     createExpressMiddleware({
@@ -30,23 +33,30 @@ async function startServer() {
     })
   );
 
+  // Servir arquivos estáticos ou Vite
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // 2. Forçar o uso da porta do Railway sem frescuras
+  // --- MELHORIA 1 & 2: Porta Dinâmica e Host Binding 0.0.0.0 ---
+  // Usa a porta injetada pelo Railway e escuta em todas as interfaces de rede
   const port = Number(process.env.PORT || 3000);
   const host = "0.0.0.0";
 
   server.listen(port, host, () => {
-    console.log(`🚀 SERVER_READY: Escutando em ${host}:${port}`);
+    console.log(`\n--- 🚀 MELHORIAS APLICADAS ---`);
+    console.log(`✅ PORTA: ${port} (via process.env.PORT)`);
+    console.log(`✅ HOST: ${host} (Binding externo ativo)`);
+    console.log(`✅ HEALTHCHECK: http://${host}:${port}/health (Público)`);
+    console.log(`-----------------------------\n`);
   });
 }
 
-// Iniciar sem travar o processo principal
+// --- MELHORIA 3: Tratamento de Erros para evitar crash no boot ---
 startServer().catch((err) => {
-  console.error("❌ Erro fatal no servidor:", err);
-  process.exit(1);
+  console.error("❌ ERRO CRÍTICO NA INICIALIZAÇÃO:", err);
+  // Não encerra o processo imediatamente para permitir que os logs sejam lidos no Railway
+  setTimeout(() => process.exit(1), 5000);
 });

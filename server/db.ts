@@ -18,13 +18,18 @@ export async function getDb() {
         _db = drizzle(process.env.DATABASE_URL);
         console.log("[Database] Drizzle configurado. Testando conexão com query simples...");
         
-        // Teste de conexão real
-        await _db.execute(sql`SELECT 1`);
-        console.log("[Database] Teste de conexão (SELECT 1) bem-sucedido!");
+        // Teste de conexão real (com timeout para não travar o boot)
+        const connectionTest = Promise.race([
+          _db.execute(sql`SELECT 1`),
+          new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout na conexão com o banco")), 5000))
+        ]);
+        
+        await connectionTest;
+        console.log("✅ [Database] Conexão com MySQL validada com sucesso!");
       } catch (error) {
-        console.error("[Database] Erro crítico na conexão ou teste do banco:", error);
+        console.error("⚠️ [Database] Aviso: Não foi possível conectar ao banco agora, mas o servidor continuará subindo:", error.message);
+        // Mantemos o _db como null para tentar novamente depois, mas não travamos o servidor
         _db = null;
-        // Não travar o servidor se o banco falhar, mas logar o erro
       }
     } else {
       console.warn("[Database] DATABASE_URL não encontrada. Verifique as variáveis de ambiente no Railway.");
