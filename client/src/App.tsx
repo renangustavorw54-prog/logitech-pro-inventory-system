@@ -12,6 +12,7 @@ import Movements from "./pages/Movements";
 import Alerts from "./pages/Alerts";
 import History from "./pages/History";
 import Reports from "./pages/Reports";
+import Financial from "./pages/Financial";
 
 function Router() {
   return (
@@ -49,6 +50,11 @@ function Router() {
       <Route path={"/reports"}>
         <DashboardLayout>
           <Reports />
+        </DashboardLayout>
+      </Route>
+      <Route path={"/financial"}>
+        <DashboardLayout>
+          <Financial />
         </DashboardLayout>
       </Route>
       <Route path={"/404"} component={NotFound} />

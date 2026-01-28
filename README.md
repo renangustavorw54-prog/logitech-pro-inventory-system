@@ -30,7 +30,7 @@ Certifique-se de configurar estas variáveis no painel do Railway:
 
 ---
 
-![LogiTech Pro](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![LogiTech Pro](https://img.shields.io/badge/version-1.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Status](https://img.shields.io/badge/status-Production%20Ready-brightgreen.svg)
 
@@ -134,6 +134,7 @@ A barra lateral esquerda oferece acesso às principais funcionalidades:
 - **Histórico** - Consulta de transações passadas
 - **Alertas** - Monitoramento de estoque crítico
 - **Relatórios** - Análises e gráficos de desempenho
+- **Financeiro & Probabilidades** - Análise de ROI, custo e previsões de venda
 
 ### Criando seu Primeiro Produto
 
@@ -288,6 +289,8 @@ Para dúvidas comerciais, licenciamento ou parcerias:
 - [x] Controle de permissões por usuário (RBAC)
 - [x] Alertas automáticos de estoque crítico
 - [x] Análise de giro de produtos
+- [x] Gestão de Banca e Financeiro (ROI, Custo, Lucro Potencial)
+- [x] Análise de Probabilidades de Venda e Nível de Risco
 - [ ] Gerenciamento de fornecedores
 - [ ] Integração com sistemas de pagamento
 - [ ] App mobile nativo (iOS/Android)

@@ -153,6 +153,8 @@ export async function getAllProducts() {
     quantity: products.quantity,
     minStock: products.minStock,
     price: products.price,
+    cost: products.cost,
+    roi: products.roi,
     createdAt: products.createdAt,
     updatedAt: products.updatedAt,
   })
@@ -172,6 +174,8 @@ export async function getProductById(id: number) {
     quantity: products.quantity,
     minStock: products.minStock,
     price: products.price,
+    cost: products.cost,
+    roi: products.roi,
     createdAt: products.createdAt,
     updatedAt: products.updatedAt,
   })
@@ -199,6 +203,8 @@ export async function getLowStockProducts() {
     quantity: products.quantity,
     minStock: products.minStock,
     price: products.price,
+    cost: products.cost,
+    roi: products.roi,
     createdAt: products.createdAt,
     updatedAt: products.updatedAt,
   })

@@ -42,6 +42,8 @@ export const products = mysqlTable("products", {
   quantity: int("quantity").notNull().default(0),
   minStock: int("minStock").notNull().default(5),
   price: decimal("price", { precision: 10, scale: 2 }).notNull().default("0.00"),
+  cost: decimal("cost", { precision: 10, scale: 2 }).notNull().default("0.00"),
+  roi: decimal("roi", { precision: 10, scale: 2 }).notNull().default("0.00"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
