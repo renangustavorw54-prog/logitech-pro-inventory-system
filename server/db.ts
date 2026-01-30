@@ -331,8 +331,9 @@ export async function getDashboardStats() {
 
   const allProducts = await db.select().from(products);
   const totalValue = allProducts.reduce((sum, p) => {
-    const price = typeof p.price === 'string' ? parseFloat(p.price) : p.price;
-    return sum + (price * p.quantity);
+    const price = typeof p.price === 'string' ? parseFloat(p.price) : (p.price || 0);
+    const quantity = p.quantity || 0;
+    return sum + (Number(price) * quantity);
   }, 0);
 
   const recentTransactions = await db.select({

@@ -15,5 +15,9 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["server/**/*.test.ts", "server/**/*.spec.ts"],
+    alias: {
+      "./db": path.resolve(templateRoot, "server", "db.mock.ts"),
+      "../db": path.resolve(templateRoot, "server", "db.mock.ts"),
+    }
   },
 });
