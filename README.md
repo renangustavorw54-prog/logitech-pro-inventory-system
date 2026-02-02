@@ -18,11 +18,29 @@ O **Controle Fácil de Estoque** é o sistema que organiza seu almoxarifado, evi
 
 **Ideal para:** Lojas, oficinas, almoxarifados, depósitos e qualquer pequeno negócio que precise de um controle de estoque eficiente sem complicação.
 
-## Veja Como Funciona (Demo e Vídeo)
+## 📸 Veja o Sistema em Ação
 
-[Link para a Demo Online (em breve)]
+### Dashboard Inteligente
+![Dashboard do Sistema](assets/marketing/dashboard.png)
+*Tenha uma visão geral do seu estoque, alertas e movimentações em tempo real.*
 
-[Link para o Vídeo de Demonstração (em breve)]
+### Controle de Produtos
+![Gestão de Produtos](assets/marketing/produtos.png)
+*Cadastre e gerencie seus itens com facilidade, definindo níveis mínimos para alertas.*
+
+### Relatórios e Análises
+![Relatórios](assets/marketing/relatorios.png)
+*Gere relatórios profissionais e analise o giro do seu estoque para tomar melhores decisões.*
+
+---
+
+## 🚀 Experimente Agora
+
+### 🚀 Em Breve: Demo Online e Vídeo de Demonstração!
+
+Estamos preparando uma demo online interativa e um vídeo curto para você ver o **Controle Fácil de Estoque** em ação. Fique ligado!
+
+*Enquanto isso, entre em contato para uma demonstração personalizada!*
 
 ## Planos Feitos Para Você
 
@@ -38,4 +56,12 @@ Escolha o plano que melhor se adapta à sua necessidade:
 
 Entre em contato e descubra como o **Controle Fácil de Estoque** pode transformar a gestão do seu negócio!
 
-[Seu Contato - WhatsApp/Email/LinkedIn]
+### 📲 Gostou? Vamos conversar!
+
+Estou pronto para te ajudar a organizar seu estoque hoje mesmo. Escolha a melhor forma de contato:
+
+*   **WhatsApp:** [Clique aqui para falar comigo](https://wa.me/5512991947726)
+*   **LinkedIn:** [Meu Perfil Profissional](https://www.linkedin.com/in/renangustavorw54?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
+*   **Email:** Renangustavorw54@gmail.com
+
+**Diferencial:** Eu já trabalhei em almoxarifado e entendo exatamente a sua dor. Desenvolvi este sistema para ser a solução que eu gostaria de ter usado!

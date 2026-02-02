@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: logitech-pro-inventory
+    runtime: node
+    plan: free
+    buildCommand: pnpm install && pnpm build
+    startCommand: pnpm start
+    envVars:
+      - key: DATABASE_URL
+        description: URL de conexão do banco de dados MySQL
+        required: true
+      - key: JWT_SECRET
+        description: Chave secreta para JWT
+        required: true
+      - key: NODE_ENV
+        value: production
+      - key: OWNER_OPEN_ID
+        description: ID do proprietário/administrador
+        required: true
+      - key: VITE_APP_ID
+        description: ID da aplicação
+        required: true
+      - key: OAUTH_SERVER_URL
+        description: URL do servidor OAuth
+        required: false
+      - key: VITE_OAUTH_PORTAL_URL
+        description: URL do portal OAuth
+        required: false
+
+  - type: mysql
+    name: logitech-pro-db
+    plan: free
+    ipAllowList: []

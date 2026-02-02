@@ -1,0 +1,35 @@
+{
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist",
+  "framework": "other",
+  "env": {
+    "DATABASE_URL": {
+      "description": "URL de conexão do banco de dados MySQL",
+      "required": true
+    },
+    "JWT_SECRET": {
+      "description": "Chave secreta para JWT",
+      "required": true
+    },
+    "NODE_ENV": {
+      "description": "Ambiente de execução",
+      "default": "production"
+    },
+    "OWNER_OPEN_ID": {
+      "description": "ID do proprietário/administrador",
+      "required": true
+    },
+    "VITE_APP_ID": {
+      "description": "ID da aplicação",
+      "required": true
+    },
+    "OAUTH_SERVER_URL": {
+      "description": "URL do servidor OAuth",
+      "required": false
+    },
+    "VITE_OAUTH_PORTAL_URL": {
+      "description": "URL do portal OAuth",
+      "required": false
+    }
+  }
+}
